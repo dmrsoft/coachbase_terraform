@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#for AmazonLinux
+wget https://bootstrap.pypa.io/get-pip.py
+chmod +x get-pip.py
+python get-pip.py pip==20.0.2
+sudo /usr/local/bin/pip install ansible==2.9.4
+sudo /usr/local/bin/pip install boto3==1.11.14
+sudo /usr/local/bin/pip install awscli==1.16.102
+sudo yum -y install jq
+
+
+echo "module name ${module_name}"
+
+echo download from s3://${ansible_repo_bucket}/${module_name}/${module_name}-v${module_version}.tar.gz
+
+aws s3 cp s3://${ansible_repo_bucket}/${module_name}/${module_name}-v${module_version}.tar.gz ${module_name}-v${module_version}.tar.gz --region us-east-1
+rm -rf ${module_name}
+mkdir ${module_name}
+tar -xzf ${module_name}-v${module_version}.tar.gz -C ./${module_name}
+
+cd /${module_name}
+aws s3 cp s3://${ansible_repo_bucket}/${module_name}/${ini_file_name} environment.ini --region us-east-1
+chmod +x run_commands/*
+run_commands/install_couchbase.sh
