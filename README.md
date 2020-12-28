@@ -1,4 +1,4 @@
-# terraform_couchbase_installation
+# terraform-couchbase-installation
 
 
 Terraform & Ansible project that creates couchbase cluster end to end
